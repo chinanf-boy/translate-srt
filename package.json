@@ -1,0 +1,14 @@
+{
+  "name": "tranSrt",
+  "version": "1.0.0",
+  "description": "translate srt to watch zh language",
+  "main": "tranSrt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yobrave",
+  "license": "MIT",
+  "dependencies": {
+    "translation.js": "^0.6.8"
+  }
+}
