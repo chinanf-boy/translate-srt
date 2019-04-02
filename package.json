@@ -1,14 +1,19 @@
 {
-  "name": "tranSrt",
+  "name": "translate-srt",
   "version": "1.0.0",
-  "description": "translate srt to watch zh language",
+  "description": "translate english srt to zh-CN language",
   "main": "tranSrt.js",
+  "bin": {
+    "translate-srt": "tranSrt.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "yobrave",
   "license": "MIT",
   "dependencies": {
-    "translation.js": "^0.6.8"
+    "lodash.chunk": "^4.2.0",
+    "mz": "^2.7.0",
+    "translation.js-fix": "^0.7.8"
   }
 }
