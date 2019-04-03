@@ -1,4 +1,7 @@
-## translate-srt
+## translate-srt [![translate-svg]][translate-list]
+
+[translate-svg]: http://llever.com/translate.svg
+[translate-list]: https://github.com/chinanf-boy/chinese-translate-list
 
 `srt`(字幕格式文件)-(英文转)中文翻译工具
 
@@ -6,7 +9,7 @@
 transalte-srt [srt file-path]
 ```
 
-## npm
+## npm ![npm](https://img.shields.io/npm/v/translate-srt.svg?style=for-the-badge)
 
 ```
 npm i -g translate-srt
