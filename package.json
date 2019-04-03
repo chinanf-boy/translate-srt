@@ -14,6 +14,10 @@
   },
   "author": "yobrave",
   "license": "MIT",
+  "files": [
+    "*.js",
+    "*.md"
+  ],
   "dependencies": {
     "lodash.chunk": "^4.2.0",
     "mz": "^2.7.0",
