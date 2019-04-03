@@ -25,11 +25,9 @@ const onlyNum = n => {
 
 const APIs = ['google', 'baidu'];
 
-async function tranSrt(fileP) {
+async function tranSrt(data) {
   let errMsg = [];
   // read file
-  let data = await fs.readFile(fileP, 'utf8');
-
   const dataList = data.split('\n');
   let needs = {};
 
@@ -92,7 +90,16 @@ async function tranSrt(fileP) {
         R = true;
       }
     });
-    let fileP = path.resolve(process.argv[2]);
+    
+    let fileP, data; 
+    try { // fix: Error file path
+      fileP = path.resolve(process.argv[2]);
+      data = await fs.readFile(fileP, 'utf8');
+    } catch (e) {
+      console.error('❌', e);
+      return;
+    }
+
     const l = twoLog(D);
     Log = l.start(`start transalte ${fileP}`, cliOpt);
 
@@ -105,7 +112,7 @@ async function tranSrt(fileP) {
         return;
       }
 
-    let [newdata, err = []] = await tranSrt(fileP);
+    let [newdata, err = []] = await tranSrt(data);
 
     if (err.length > 0) {
       console.error(err);
