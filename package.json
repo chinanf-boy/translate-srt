@@ -1,6 +1,6 @@
 {
   "name": "translate-srt",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "translate english srt to zh-CN language",
   "main": "tranSrt.js",
   "bin": {
@@ -9,8 +9,8 @@
   "scripts": {
     "test": "echo 'fine'",
     "npmUp": "npm version patch && npm publish",
-		"git": "git push && git push --tags",
-		"pub": "npm run test && npm run npmUp && npm run git"
+    "git": "git push && git push --tags",
+    "pub": "npm run test && npm run npmUp && npm run git"
   },
   "author": "yobrave",
   "license": "MIT",
