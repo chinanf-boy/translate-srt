@@ -9,7 +9,7 @@
 transalte-srt [srt file-path]
 ```
 
-## npm ![npm](https://img.shields.io/npm/v/translate-srt.svg?style=for-the-badge)
+## npm ![npm](https://img.shields.io/npm/v/translate-srt.svg?style=flat-square)
 
 ```
 npm i -g translate-srt
