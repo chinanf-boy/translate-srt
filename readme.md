@@ -3,10 +3,16 @@
 `srt`(字幕格式文件)-(英文转)中文翻译工具
 
 ```bash
-transalte=srt [srt file-path]
+transalte-srt [srt file-path]
 ```
 
 ## Tips
+
+### 重翻译
+
+```bash
+translate-srt [srt file-path] -R
+```
 
 ### 多 srt 文件
 
@@ -33,6 +39,12 @@ ffmpeg -i source.ass source.srt
 ```
 
 > 其实，针对 srt 格式的解析，本工具只是做了[两正则式的匹配](./tranSrt.js#L7)。或许真有人提议，我们就把对应格式的正则式放在一个文件模块中，如`{'srt':[第一个正则式,第一个正则式],'ass':[...], '*': ...}`之类的
+
+### 调试
+
+```bash
+transalte-srt [srt file-path] -D
+```
 
 ## 相关
 

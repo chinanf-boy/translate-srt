@@ -78,16 +78,8 @@ async function tranSrt(fileP) {
 }
 
 (async () => {
-  function insert_flg(str, flg, Uindex) {
-    let newstr = '';
-    if (!str || !flg) {
-      throw TypeError('filename<' + str + '> can not add' + flg);
-    }
-    let len = str.length;
-    let tmp = str.substring(0, len - Uindex);
-    newstr = tmp + flg + str.substring(len - Uindex, len);
-    return newstr;
-  }
+  const {insert_flg} = require('./util.js');
+  const fileSub = ['srt']; // 格式
 
   let D,
     R = false;
@@ -105,8 +97,11 @@ async function tranSrt(fileP) {
     Log = l.start(`start transalte ${fileP}`, cliOpt);
 
     if (!R)
-      if (await fs.existsSync(insert_flg(fileP, `.zh`, 4))) {
-        console.log(`已翻译, 不覆盖 ${fileP}`);
+      if (await fs.existsSync(insert_flg(fileP, `.zh`, fileSub[0].length))) {
+        // 若已有，提前返回，
+        l.one(`已翻译, 不覆盖 ${fileP}`);
+        // stop 必须有
+        l.stop();
         return;
       }
 
@@ -115,12 +110,13 @@ async function tranSrt(fileP) {
     if (err.length > 0) {
       console.error(err);
     } else {
-      let saveF = `${insert_flg(fileP, `.zh`, 4)}`;
+      let saveF = `${insert_flg(fileP, `.zh`, fileSub[0].length)}`;
       Log(saveF + 'save 🧡', {only: 'log'});
       await fs.writeFile(saveF, newdata);
-
-      l.stop(`${fileP}，成功`, {ora: 'succeed'});
+      l.one(`翻译成功，位于：${saveF}`);
     }
+
+    l.stop(); // two-log-min 的生命是 1.start 2. text 3.stop。不然 ora 就会 一直转
   } else {
     console.error('❌Error: input source Srt file path');
   }
