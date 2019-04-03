@@ -4,11 +4,11 @@ const tjs = require('translation.js-fix');
 const path = require('path');
 const chunk = require('lodash.chunk');
 
-function timeout(t) {
-  return new Promise((resolve, reject) => {
-    setTimeout(ok, t);
-  });
-}
+// log
+const {cliOpt} = require('./logOpt.js');
+const twoLog = require('two-log-min');
+let Log;
+
 const reg = function(str) {
   // \d*:\d.* --> \d*:\d*.*\d
   // [^, -->.*\d:]+
@@ -45,7 +45,7 @@ async function tranSrt(fileP) {
   let allIndex = Object.keys(needs);
   let chunkIdx = chunk(allIndex, 30);
   let chunkVal = chunk(allValue, 30);
-  console.log(chunkIdx.length,chunkVal.length)
+  Log(`idxL: ${chunkIdx.length} , valL: ${chunkVal.length}`);
 
   for (let idx in chunkVal) {
     let singleChunk = chunkVal[idx];
@@ -65,10 +65,10 @@ async function tranSrt(fileP) {
         chunkIdx[idx].forEach(index => {
           dataList[index] = singleChunk.shift();
         });
-        console.log(`${api} ${(+idx + 1) * 30}, ✅`);
+        Log(`${api} ${(+idx + 1) * 30}, ^-^`);
         break;
-      }else{
-        console.log(`${api} ${(+idx + 1) * 30}, ❌`);
+      } else {
+        Log(`${api} ${(+idx + 1) * 30}, ·_~～～`);
       }
     }
     !result && errMsg.push(`${(+idx + 1) * 30}，失败`);
@@ -89,26 +89,39 @@ async function tranSrt(fileP) {
     return newstr;
   }
 
+  let D,
+    R = false;
+
   if (process.argv[2]) {
+    process.argv.forEach(arg => {
+      if (arg == '-D') {
+        D = true;
+      } else if (arg == '-R') {
+        R = true;
+      }
+    });
     let fileP = path.resolve(process.argv[2]);
+    const l = twoLog(D);
+    Log = l.start(`start transalte ${fileP}`, cliOpt);
 
-    if (await fs.existsSync(insert_flg(fileP, `.zh`, 4))){
-       console.log(`已翻译, 不覆盖 ${fileP}`)
-       return
-    }
+    if (!R)
+      if (await fs.existsSync(insert_flg(fileP, `.zh`, 4))) {
+        console.log(`已翻译, 不覆盖 ${fileP}`);
+        return;
+      }
 
-    let [newdata, err = [] ] = await tranSrt(fileP);
+    let [newdata, err = []] = await tranSrt(fileP);
 
     if (err.length > 0) {
-      console.error(err)
+      console.error(err);
     } else {
       let saveF = `${insert_flg(fileP, `.zh`, 4)}`;
-      console.log(saveF, 'save 🧡');
+      Log(saveF + 'save 🧡', {only: 'log'});
       await fs.writeFile(saveF, newdata);
-      
-      console.log(`${fileP}，成功`);
+
+      l.stop(`${fileP}，成功`, {ora: 'succeed'});
     }
   } else {
-    console.error('Error: input source Srt file path');
+    console.error('❌Error: input source Srt file path');
   }
 })();

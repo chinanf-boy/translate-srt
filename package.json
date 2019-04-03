@@ -1,6 +1,6 @@
 {
   "name": "translate-srt",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "translate english srt to zh-CN language",
   "main": "tranSrt.js",
   "bin": {
@@ -14,6 +14,7 @@
   "dependencies": {
     "lodash.chunk": "^4.2.0",
     "mz": "^2.7.0",
-    "translation.js-fix": "^0.7.8"
+    "translation.js-fix": "^0.7.8",
+    "two-log-min": "^1.0.12"
   }
 }
