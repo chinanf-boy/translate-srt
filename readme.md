@@ -6,6 +6,12 @@
 transalte-srt [srt file-path]
 ```
 
+## npm
+
+```
+npm i -g translate-srt
+```
+
 ## Tips
 
 ### 重翻译
@@ -49,3 +55,14 @@ transalte-srt [srt file-path] -D
 ## 相关
 
 - [translate-mds](https://github.com/chinanf-boy/translate-mds) 翻译 `md` 文件
+- [two-log-min](https://github.com/chinanf-boy/two-log-min) ora + debug ，仅仅供给个人使用。
+
+## 题外话
+
+测试并不是很多，但主要功能也只有一个，[test.zh.srt](./test.zh.srt) 就是由 `translate-srt` + [test.srt](./test.srt)，而来。
+
+实践例子：
+
+- `LiveOverflow @ youtube 「Binary Hacking / Memory Corruption （让我们 he 二进制吧）」视频` ：[youtube](https://www.youtube.com/watch?v=iyAyN3GFM7A&list=PLhixgUqwRTjxglIswKp9mpkfPNfHkzyeN) (已由该工具翻译，只是校对未完成，也许会上传到 B 站，毕竟我也要看，时间不定)
+
+> 本来在 2018.6 月 有人上传了第一集中文字幕，说好再更的，啧！一点动静都没有。
