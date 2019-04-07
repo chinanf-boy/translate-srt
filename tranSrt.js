@@ -81,17 +81,17 @@ async function tranSrt(data) {
 
   let D,
     R = false;
+  process.argv.forEach(arg => {
+    if (arg == '-D') {
+      D = true;
+    } else if (arg == '-R') {
+      R = true;
+    }
+  });
+  const l = twoLog(D);
 
-  async function tranSrt() {
+  async function run() {
     if (process.argv[2]) {
-      process.argv.forEach(arg => {
-        if (arg == '-D') {
-          D = true;
-        } else if (arg == '-R') {
-          R = true;
-        }
-      });
-
       let fileP, data;
       try {
         // fix: Error file path
@@ -101,7 +101,6 @@ async function tranSrt(data) {
         return '❌' + e;
       }
 
-      const l = twoLog(D);
       Log = l.start(`start transalte ${fileP}`, cliOpt);
 
       if (fileP.endsWith('.zh.srt')) {
@@ -133,12 +132,13 @@ async function tranSrt(data) {
     }
   }
   // run
-  let err = await tranSrt();
-  twoLog.loggerStop();
-  
+  let err = await run();
+
+  // two-log-min 的生命是 1.start 2. text 3.stop。不然 ora 就会 一直转
+  l.stop();
+
   if (err) {
     console.error(err);
     process.exit(1);
   }
-  // two-log-min 的生命是 1.start 2. text 3.stop。不然 ora 就会 一直转
 })();
