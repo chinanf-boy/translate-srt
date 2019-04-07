@@ -82,49 +82,63 @@ async function tranSrt(data) {
   let D,
     R = false;
 
-  if (process.argv[2]) {
-    process.argv.forEach(arg => {
-      if (arg == '-D') {
-        D = true;
-      } else if (arg == '-R') {
-        R = true;
+  async function tranSrt() {
+    if (process.argv[2]) {
+      process.argv.forEach(arg => {
+        if (arg == '-D') {
+          D = true;
+        } else if (arg == '-R') {
+          R = true;
+        }
+      });
+
+      let fileP, data;
+      try {
+        // fix: Error file path
+        fileP = path.resolve(process.argv[2]);
+        data = await fs.readFile(fileP, 'utf8');
+      } catch (e) {
+        return '❌' + e;
       }
-    });
-    
-    let fileP, data; 
-    try { // fix: Error file path
-      fileP = path.resolve(process.argv[2]);
-      data = await fs.readFile(fileP, 'utf8');
-    } catch (e) {
-      console.error('❌', e);
-      return;
-    }
 
-    const l = twoLog(D);
-    Log = l.start(`start transalte ${fileP}`, cliOpt);
+      const l = twoLog(D);
+      Log = l.start(`start transalte ${fileP}`, cliOpt);
 
-    if (!R)
-      if (await fs.existsSync(insert_flg(fileP, `.zh`, fileSub[0].length))) {
-        // 若已有，提前返回，
-        l.one(`已翻译, 不覆盖 ${fileP}`);
-        // stop 必须有
-        l.stop();
+      if (fileP.endsWith('.zh.srt')) {
+        l.one(`翻译文件, 不覆盖 ${fileP}`);
         return;
       }
 
-    let [newdata, err = []] = await tranSrt(data);
+      if (!R) {
+        if (await fs.existsSync(insert_flg(fileP, `.zh`, fileSub[0].length))) {
+          // 若已有，提前返回，
+          l.one(`已翻译, 不覆盖 ${fileP}`);
+          // stop 必须有
+          return;
+        }
+      }
 
-    if (err.length > 0) {
-      console.error(err);
+      let [newdata, err = []] = await tranSrt(data);
+
+      if (err.length > 0) {
+        console.error(err);
+      } else {
+        let saveF = `${insert_flg(fileP, `.zh`, fileSub[0].length)}`;
+        Log(saveF + 'save 🧡', {only: 'log'});
+        await fs.writeFile(saveF, newdata);
+        l.one(`翻译成功，位于：${saveF}`);
+      }
     } else {
-      let saveF = `${insert_flg(fileP, `.zh`, fileSub[0].length)}`;
-      Log(saveF + 'save 🧡', {only: 'log'});
-      await fs.writeFile(saveF, newdata);
-      l.one(`翻译成功，位于：${saveF}`);
+      return ' ❌ Error: input source Srt file path';
     }
-
-    l.stop(); // two-log-min 的生命是 1.start 2. text 3.stop。不然 ora 就会 一直转
-  } else {
-    console.error('❌Error: input source Srt file path');
   }
+  // run
+  let err = await tranSrt();
+  twoLog.loggerStop();
+  
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  // two-log-min 的生命是 1.start 2. text 3.stop。不然 ora 就会 一直转
 })();

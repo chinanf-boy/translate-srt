@@ -7,7 +7,7 @@
     "translate-srt": "tranSrt.js"
   },
   "scripts": {
-    "test": "echo 'fine'",
+    "test": "node test.js",
     "npmUp": "npm version patch && npm publish",
     "git": "git push && git push --tags",
     "pub": "npm run test && npm run npmUp && npm run git"
