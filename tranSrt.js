@@ -12,7 +12,10 @@ let Log;
 const reg = function(str) {
   // \d*:\d.* --> \d*:\d*.*\d
   // [^, -->.*\d:]+
-  return !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNum(str);
+  str = str.trimEnd();
+  return (
+    !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNum(str) && !str.endsWith('.')
+  );
 };
 
 const onlyNum = n => {
