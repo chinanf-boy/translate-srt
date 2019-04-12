@@ -44,8 +44,9 @@ async function tranSrt(data) {
   // translate all value in needs Type: {num: value}
   let allValue = Object.values(needs);
   let allIndex = Object.keys(needs);
-  let chunkIdx = chunk(allIndex, 30);
-  let chunkVal = chunk(allValue, 30);
+  let ChunkSize = 20;
+  let chunkIdx = chunk(allIndex, ChunkSize);
+  let chunkVal = chunk(allValue, ChunkSize);
   Log(`idxL: ${chunkIdx.length} , valL: ${chunkVal.length}`);
 
   for (let idx in chunkVal) {
@@ -53,26 +54,27 @@ async function tranSrt(data) {
     let result = false;
     for (let api of APIs) {
       try {
-        result = await tjs[api].translate(singleChunk.join('\n'));
+        let tjsOpts = {
+          text: singleChunk.join('\n'),
+          to: "zh-CN"
+          }
+        result = await tjs[api].translate(tjsOpts);
       } catch (e) {
         result = false;
       }
-      if (result) {
+      if (result && result.result.length == singleChunk.length) {
         singleChunk = result.result;
-      }
-
-      if (result && result.result.length) {
         // set back to source dataList
         chunkIdx[idx].forEach(index => {
           dataList[index] = singleChunk.shift();
         });
-        Log(`${api} ${(+idx + 1) * 30}, ^-^`);
+        Log(`${api} ${(+idx + 1) * ChunkSize}, ^-^`);
         break;
       } else {
-        Log(`${api} ${(+idx + 1) * 30}, ·_~～～`);
+        Log(`${api} ${(+idx + 1) * ChunkSize}, ·_~～～`);
       }
     }
-    !result && errMsg.push(`${(+idx + 1) * 30}，失败`);
+    !result && errMsg.push(`${(+idx + 1) * ChunkSize}，失败`);
   }
 
   return [dataList.join('\n'), errMsg];
@@ -120,7 +122,8 @@ async function tranSrt(data) {
         }
       }
 
-      let [newdata, err = []] = await tranSrt(data);
+
+      let [newdata, err] = await tranSrt(data);
 
       if (err.length > 0) {
         console.error(err);
