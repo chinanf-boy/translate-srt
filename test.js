@@ -1,6 +1,21 @@
 const assert = require('assert');
 const {exec} = require('child_process');
 
+const onlyNumOrEnd = n => {
+  try {
+    return Number.isSafeInteger(+n) && !n.endsWith(".")
+  } catch {
+    return false;
+  }
+};
+
+const num1 = 'onlyNum - 8.';
+console.log('test4', num1);
+assert(!onlyNumOrEnd("8."));
+assert(onlyNumOrEnd("8.0"));
+console.log('test4 pass 😊 ');
+
+
 const cli1 = 'node tranSrt.js test.zh.srt';
 console.log('test1', cli1);
 exec(cli1, (error, stdout, stderr) => {

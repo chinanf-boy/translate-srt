@@ -14,13 +14,13 @@ const reg = function(str) {
   // [^, -->.*\d:]+
   str = str.trimEnd();
   return (
-    !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNum(str) && !str.endsWith('.')
+    !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNumOrEnd(str) 
   );
 };
 
-const onlyNum = n => {
+const onlyNumOrEnd = n => {
   try {
-    return Number.isSafeInteger(+n);
+    return Number.isSafeInteger(+n) && !n.endsWith(".")
   } catch {
     return false;
   }
@@ -41,6 +41,9 @@ async function tranSrt(data) {
       needs[i] = dataList[i];
     }
   }
+  console.log(needs)
+
+  process.exit()
   // translate all value in needs Type: {num: value}
   let allValue = Object.values(needs);
   let allIndex = Object.keys(needs);
@@ -48,7 +51,7 @@ async function tranSrt(data) {
   let chunkIdx = chunk(allIndex, ChunkSize);
   let chunkVal = chunk(allValue, ChunkSize);
   Log(`idxL: ${chunkIdx.length} , valL: ${chunkVal.length}`);
-
+  let allTran = [];
   for (let idx in chunkVal) {
     let singleChunk = chunkVal[idx];
     let result = false;
@@ -64,10 +67,9 @@ async function tranSrt(data) {
       }
       if (result && result.result.length == singleChunk.length) {
         singleChunk = result.result;
-        // set back to source dataList
-        chunkIdx[idx].forEach(index => {
-          dataList[index] = singleChunk.shift();
-        });
+        // collect
+        allTran = allTran.concat(singleChunk);
+        
         Log(`${api} ${(+idx + 1) * ChunkSize}, ^-^`);
         break;
       } else {
@@ -76,6 +78,15 @@ async function tranSrt(data) {
     }
     !result && errMsg.push(`${(+idx + 1) * ChunkSize}，失败`);
   }
+
+  if(allTran.length == allValue.length){
+    allIndex.forEach(i =>{
+      // set back to source dataList
+      dataList[i] = allTran.shift()
+      console.log(i)
+    })
+  }
+  console.log(dataList)
 
   return [dataList.join('\n'), errMsg];
 }
