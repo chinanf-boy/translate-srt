@@ -13,14 +13,12 @@ const reg = function(str) {
   // \d*:\d.* --> \d*:\d*.*\d
   // [^, -->.*\d:]+
   str = str.trimEnd();
-  return (
-    !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNumOrEnd(str) 
-  );
+  return !/\d*:\d.* --> \d*:\d*.*\d/.test(str) && !onlyNumOrEnd(str);
 };
 
 const onlyNumOrEnd = n => {
   try {
-    return Number.isSafeInteger(+n) && !n.endsWith(".")
+    return Number.isSafeInteger(+n) && !n.endsWith('.');
   } catch {
     return false;
   }
@@ -41,13 +39,11 @@ async function tranSrt(data) {
       needs[i] = dataList[i];
     }
   }
-  console.log(needs)
 
-  process.exit()
   // translate all value in needs Type: {num: value}
   let allValue = Object.values(needs);
   let allIndex = Object.keys(needs);
-  let ChunkSize = 20;
+  let ChunkSize = 30;
   let chunkIdx = chunk(allIndex, ChunkSize);
   let chunkVal = chunk(allValue, ChunkSize);
   Log(`idxL: ${chunkIdx.length} , valL: ${chunkVal.length}`);
@@ -59,8 +55,8 @@ async function tranSrt(data) {
       try {
         let tjsOpts = {
           text: singleChunk.join('\n'),
-          to: "zh-CN"
-          }
+          to: 'zh-CN'
+        };
         result = await tjs[api].translate(tjsOpts);
       } catch (e) {
         result = false;
@@ -69,7 +65,7 @@ async function tranSrt(data) {
         singleChunk = result.result;
         // collect
         allTran = allTran.concat(singleChunk);
-        
+
         Log(`${api} ${(+idx + 1) * ChunkSize}, ^-^`);
         break;
       } else {
@@ -79,14 +75,12 @@ async function tranSrt(data) {
     !result && errMsg.push(`${(+idx + 1) * ChunkSize}，失败`);
   }
 
-  if(allTran.length == allValue.length){
-    allIndex.forEach(i =>{
+  if (allTran.length == allValue.length) {
+    allIndex.forEach(i => {
       // set back to source dataList
-      dataList[i] = allTran.shift()
-      console.log(i)
-    })
+      dataList[i] = allTran.shift();
+    });
   }
-  console.log(dataList)
 
   return [dataList.join('\n'), errMsg];
 }
@@ -133,11 +127,9 @@ async function tranSrt(data) {
         }
       }
 
-
       let [newdata, err] = await tranSrt(data);
 
       if (err.length > 0) {
-        console.error(err);
       } else {
         let saveF = `${insert_flg(fileP, `.zh`, fileSub[0].length)}`;
         Log(saveF + 'save 🧡', {only: 'log'});
@@ -155,7 +147,7 @@ async function tranSrt(data) {
   l.stop();
 
   if (err) {
-    console.error(err);
+    console.error(err)
     process.exit(1);
   }
 })();
